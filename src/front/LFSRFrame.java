@@ -12,6 +12,7 @@ public class LFSRFrame extends JFrame {
     private JTextField tfN, tfC, tfSeed;
     private JButton bShow, bBuild, bGraph, bExit;
 
+
     // standard font for all elements in this project
     public static final Font font = new Font(Font.SERIF, Font.PLAIN, 20);
 
@@ -27,7 +28,7 @@ public class LFSRFrame extends JFrame {
         JLabel label = new JLabel(msg);
         frame.add(label);
         JButton ok = new JButton("OK");
-        ok.addActionListener(event -> {frame.dispose();});
+        ok.addActionListener(event -> frame.dispose());
         frame.add(ok);
         frame.setVisible(true);
     }
@@ -122,9 +123,7 @@ public class LFSRFrame extends JFrame {
         });
 
         bExit = new JButton("Exit");
-        bExit.addActionListener(action -> {
-            System.exit(0);
-        });
+        bExit.addActionListener(action -> System.exit(0));
         bShow.setFont(font);
         bBuild.setFont(font);
         bGraph.setFont(font);
@@ -134,6 +133,33 @@ public class LFSRFrame extends JFrame {
         add(bBuild);
         add(bGraph);
         add(bExit);
+    }
+
+    private void setupMenu() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menuFile = new JMenu("File");
+        JMenuItem clear = new JMenuItem("Clear");
+        JMenuItem exit = new JMenuItem("Exit");
+
+        JMenu menuIrreducible = new JMenu("Irreducible");
+        JMenuItem irreducible = new JMenuItem("Irreducible polynomial");
+
+        clear.addActionListener(e -> {
+            tfN.setText("");
+            tfC.setText("");
+            tfSeed.setText("");
+        });
+
+        exit.addActionListener(e -> bExit.doClick());
+
+        irreducible.addActionListener(e -> new IrreduciblePolynomialFrame(this));
+
+        menuBar.add(menuFile);
+        menuFile.add(clear);
+        menuFile.add(exit);
+        menuBar.add(menuIrreducible);
+        menuIrreducible.add(irreducible);
+        this.setJMenuBar(menuBar);
     }
 
     /**
@@ -151,10 +177,22 @@ public class LFSRFrame extends JFrame {
 
         setupUI();
         setupButtons();
+        setupMenu();
 
         tmpInit(); // TODO Think about it
 
         setVisible(true);
     }
 
+    public void setN(int N) {
+        tfN.setText(String.valueOf(N));
+    }
+
+    public void setCoefficient(int C) {
+        setCoefficient(Integer.toBinaryString(C));
+    }
+
+    public void setCoefficient(String C) {
+        tfC.setText(C);
+    }
 }
