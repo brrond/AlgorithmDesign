@@ -44,7 +44,7 @@ public class LFSRShowFrame extends JFrame {
         strings = new ArrayList<>();
         _bin = new StringBuilder();
         int tmpSeed = seed;
-        for(int i = 0; i < Math.pow(2, lfsr.getN()) - 1; i++) {
+        for(int i = 0; i < Math.pow(2, lfsr.getN()); i++) {
             _bin.append(tmpSeed & 1);
             strings.add(i + ") " + String.format("%" + lfsr.getN() + "s",
                     Integer.toBinaryString(tmpSeed)).replace(' ', '0'));
