@@ -73,6 +73,24 @@ public class LFSR {
     }
 
     /**
+     * @return theoretical period of linear feedback shift register
+     */
+    public int getT() { return (int) (Math.pow(2, n) - 1); }
+
+    /**
+     * @return actual period of linear feedback shift register
+     */
+    public int getTActual() {
+        int T = 1;
+        int curr = next(1);
+        while(curr != 1) {
+            curr = next(curr);
+            T++;
+        }
+        return T;
+    }
+
+    /**
      * Method to get basic integer iterable from curr {@code seed}
      *
      * @param seed basic state of triggers
