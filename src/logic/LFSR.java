@@ -24,8 +24,8 @@ public class LFSR {
      * @param C coefficient for register
      */
     public LFSR(int n, int C) {
-        if(n <= 0 || n > 32) throw new IllegalArgumentException();
-        if(((C & (1 << n)) == 0)) throw new IllegalArgumentException();
+        if(n <= 0 || n > 32) throw new IllegalArgumentException("n <= 0 || n > 32");
+        if(((C & (1 << n)) == 0) || ((C & 1) == 0)) throw new IllegalArgumentException("C0 * Cn != 1");
         //(C & 1) == 0 ||
         this.n = n;
         this.C = C;
