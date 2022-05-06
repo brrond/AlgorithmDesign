@@ -5,15 +5,26 @@ import logic.LFSR;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Simple {@code JFrame} class to show the possibilities
+ * of Linear feedback shift register
+ */
 public class LFSRFrame extends JFrame {
 
-    // UI elements
-    private JLabel lN, lCoefficient, lSeed;
+    /**
+     * UI Elements
+     */
     private JTextField tfN, tfC, tfSeed;
-    private JButton bShow, bBuild, bGraph, bExit;
 
+    /**
+     * Inner state
+     */
+    private int n, C, seed;
 
-    // standard font for all elements in this project
+    /**
+     * The font to used in this project
+     * All the windows use this font
+     */
     public static final Font font = new Font(Font.SERIF, Font.PLAIN, 20);
 
     /**
@@ -22,15 +33,15 @@ public class LFSRFrame extends JFrame {
      * @param msg massage to print
      */
     private void handleException(String msg) {
-        JFrame frame = new JFrame();
-        frame.setSize(500, 200);
-        frame.setLayout(new FlowLayout());
-        JLabel label = new JLabel(msg);
+        JFrame frame = new JFrame(); // create frame
+        frame.setSize(500, 200); // set its size
+        frame.setLayout(new FlowLayout()); // set flow layout because we only two elements
+        JLabel label = new JLabel(msg); // create msg
         frame.add(label);
-        JButton ok = new JButton("OK");
-        ok.addActionListener(event -> frame.dispose());
-        frame.add(ok);
-        frame.setVisible(true);
+        JButton ok = new JButton("OK"); // create OK button
+        ok.addActionListener(event -> frame.dispose()); // set button event
+        frame.add(ok); // add button
+        frame.setVisible(true); // show frame
     }
 
     /**
@@ -46,13 +57,15 @@ public class LFSRFrame extends JFrame {
      * Create user interface elements
      */
     private void setupUI() {
-        lN = new JLabel("N : ");
-        lCoefficient = new JLabel("Coefficient : ");
-        lSeed = new JLabel("Seed : ");
+        // init labels
+        JLabel lN = new JLabel("N : ");
+        JLabel lCoefficient = new JLabel("Coefficient : ");
+        JLabel lSeed = new JLabel("Seed : ");
         lN.setFont(font);
         lCoefficient.setFont(font);
         lSeed.setFont(font);
 
+        // init text fields
         tfN = new JTextField();
         tfC = new JTextField();
         tfSeed = new JTextField();
@@ -60,6 +73,7 @@ public class LFSRFrame extends JFrame {
         tfC.setFont(font);
         tfSeed.setFont(font);
 
+        // add all created elements
         add(lN);
         add(tfN);
         add(lCoefficient);
@@ -69,96 +83,109 @@ public class LFSRFrame extends JFrame {
     }
 
     /**
+     * Method to get values from user and parse them
+     */
+    private void parseValues() {
+        // gets all inputs and tries to convert to int
+        String sn = tfN.getText();
+        String sC = tfC.getText();
+        String sseed = tfSeed.getText();
+        try {
+            n = Integer.parseInt(sn);
+            C = Integer.parseInt(sC, 2);
+            seed = Integer.parseInt(sseed, 2);
+            if(n == 0 || C == 0 || seed == 0) throw new NumberFormatException();
+        } catch(NumberFormatException exception) {
+            handleException("n, Coefficient and seed must be numbers. Coefficient and seed must be binary");
+        } catch(IllegalArgumentException illegalArgumentException) {
+            handleException("Impossible values");
+        } catch(Exception e) {
+            handleException("Something went wrong");
+        }
+    }
+
+    /**
      * Creates buttons (contains business logic)
      */
     private void setupButtons() {
-        bShow = new JButton("Show");
+        // init show button
+        JButton bShow = new JButton("Show");
         bShow.addActionListener(event -> {
-            // gets all inputs and tries to convert to int
-            String sn = tfN.getText();
-            String sC = tfC.getText();
-            String sseed = tfSeed.getText();
+            parseValues();
             try {
-                int n = Integer.parseInt(sn);
-                int C = Integer.parseInt(sC, 2);
-                int seed = Integer.parseInt(sseed, 2);
-                if(n == 0 || C == 0 || seed == 0) throw new NumberFormatException();
                 new LFSRShowFrame(new LFSR(n, C), seed);
-            } catch(NumberFormatException exception) {
-                handleException("n, Coefficient and seed must be numbers. Coefficient and seed must be binary");
-            } catch(IllegalArgumentException illegalArgumentException) {
-                handleException("Impossible values");
-            } catch(Exception e) {
-                handleException("Something went wrong");
+            } catch(IllegalArgumentException e) {
+                handleException(e.getMessage());
             }
         });
 
-        bBuild = new JButton("Build");
+        // init build button
+        JButton bBuild = new JButton("Build");
         bBuild.addActionListener(event -> {
-            // TODO This is duplicate
-            // gets all inputs and tries to convert to int
-            String sn = tfN.getText();
-            String sC = tfC.getText();
-            String sseed = tfSeed.getText();
-            try {
-                int n = Integer.parseInt(sn);
-                int C = Integer.parseInt(sC, 2);
-                int seed = Integer.parseInt(sseed, 2);
-                if(n == 0 || C == 0 || seed == 0) throw new NumberFormatException();
-                new LFSRBuilderFrame(new LFSR(n, C), seed);
-            } catch(NumberFormatException exception) {
-                handleException("n, Coefficient and seed must be numbers. Coefficient and seed must be binary");
-            } catch(IllegalArgumentException illegalArgumentException) {
-                handleException("Impossible values");
-            } catch(Exception e) {
-                handleException("Something went wrong");
-            }
+            parseValues();
+            new LFSRBuilderFrame(new LFSR(n, C), seed);
         });
 
-        bGraph = new JButton("Clear");
+        // init clear button
+        JButton bGraph = new JButton("Clear");
         bGraph.addActionListener(event -> {
             tfN.setText("");
             tfC.setText("");
             tfSeed.setText("");
         });
 
-        bExit = new JButton("Exit");
+        // init exit button
+        JButton bExit = new JButton("Exit");
         bExit.addActionListener(action -> System.exit(0));
         bShow.setFont(font);
         bBuild.setFont(font);
         bGraph.setFont(font);
         bExit.setFont(font);
 
+        // add all components to window
         add(bShow);
         add(bBuild);
         add(bGraph);
         add(bExit);
     }
 
+    /**
+     * Creates user menus
+     */
     private void setupMenu() {
+        // create menu itself
         JMenuBar menuBar = new JMenuBar();
+
+        // create menu elements
         JMenu menuFile = new JMenu("File");
-        JMenuItem clear = new JMenuItem("Clear");
+        JMenu menuEdit = new JMenu("Edit");
+
+        // fill "File" menu
         JMenuItem exit = new JMenuItem("Exit");
 
-        JMenu menuIrreducible = new JMenu("Irreducible");
-        JMenuItem irreducible = new JMenuItem("Irreducible polynomial");
+        // fill "Irreducible" menu
+        JMenuItem clear = new JMenuItem("Clear");
+        JMenuItem set = new JMenuItem("Set");
 
+        // add actions
         clear.addActionListener(e -> {
             tfN.setText("");
             tfC.setText("");
             tfSeed.setText("");
         });
+        exit.addActionListener(e -> dispose());
+        set.addActionListener(e -> new IrreduciblePolynomialFrame(this));
 
-        exit.addActionListener(e -> bExit.doClick());
-
-        irreducible.addActionListener(e -> new IrreduciblePolynomialFrame(this));
-
+        // set "File" menu
         menuBar.add(menuFile);
-        menuFile.add(clear);
         menuFile.add(exit);
-        menuBar.add(menuIrreducible);
-        menuIrreducible.add(irreducible);
+
+        // set "Edit" menu
+        menuBar.add(menuEdit);
+        menuEdit.add(clear);
+        menuEdit.add(set);
+
+        // set menuBar to window
         this.setJMenuBar(menuBar);
     }
 
@@ -168,30 +195,50 @@ public class LFSRFrame extends JFrame {
     public LFSRFrame() {
         super();
 
-        setLayout(new GridLayout(5, 2));
-        setTitle("logic.LFSR example");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridLayout(5, 2)); // uses GridLayout
+        setTitle("Linear feedback shift register"); // set title
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // this is main window
+
+        // set window params
         setFont(font);
         setResizable(false);
         setSize(400, 400);
 
+        // init UI elements
         setupUI();
         setupButtons();
         setupMenu();
 
-        tmpInit(); // TODO Think about it
+        // default init
+        tmpInit();
 
+        // show window
         setVisible(true);
     }
 
+    /**
+     * Sets count of triggers
+     *
+     * @param N integer count of triggers
+     */
     public void setN(int N) {
         tfN.setText(String.valueOf(N));
     }
 
+    /**
+     * Sets coefficients
+     *
+     * @param C integer value of C
+     */
     public void setCoefficient(int C) {
         setCoefficient(Integer.toBinaryString(C));
     }
 
+    /**
+     * Sets coefficients
+     *
+     * @param C binary string of coefficients
+     */
     public void setCoefficient(String C) {
         tfC.setText(C);
     }
