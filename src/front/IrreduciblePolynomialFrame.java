@@ -3,6 +3,9 @@ package front;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * JFrame to choose polynomial coefficients
+ */
 public class IrreduciblePolynomialFrame extends JFrame {
 
     private JList<String> listPolynomials;
@@ -14,6 +17,11 @@ public class IrreduciblePolynomialFrame extends JFrame {
 
     private JButton bClose;
 
+    /**
+     * Method to get all irreducible polynomials
+     *
+     * @return {@code String[]} of irreducible polynomials
+     */
     private String[] getListData() {
         return new String[]{"^2 7H",
                 "^3 13F",

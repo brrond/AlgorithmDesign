@@ -224,17 +224,17 @@ public class LFSRShowFrame extends JFrame {
         super.paint(g);
 
         // additional Y to skip menu
-        int menuSkip = 50;
+        g.translate(0, 50);
 
         // set color and print region
         g.setColor(Color.cyan); // background color
-        g.fillRect(0, menuSkip, 600, 60);
+        g.fillRect(0, 0, 600, 60);
         String bin = _bin.toString(); // need to have string
 
         g.setColor(Color.black);
         // set default offsets
         int xOffset = 10;
-        int yOffset = 10 + menuSkip;
+        int yOffset = 10;
 
         // if this value changes we should draw v line
         boolean prev = false;

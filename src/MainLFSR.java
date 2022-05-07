@@ -1,9 +1,9 @@
 import front.LFSRFrame;
 
-public class Main {
+public class MainLFSR {
 
     public static void main(String[] args) {
-        LFSRFrame frame = new LFSRFrame();
+        new LFSRFrame();
         //LFSRBuilderFrame frame = new LFSRBuilderFrame(new logic.LFSR(4, 19), 10);
     }
 }
