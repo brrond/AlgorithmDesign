@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -15,7 +16,7 @@ import java.io.*;
  * Linear feedback shift register builder frame.
  * Draws scheme of linear feedback shift register
  */
-public class LFSRBuilderFrame extends JFrame {
+public class LFSRBuilderFrame extends FrameBase {
 
     /**
      * Linear feedback shift register itself
@@ -26,35 +27,18 @@ public class LFSRBuilderFrame extends JFrame {
      * Current state
      */
     private int curr;
+    private final int menuSkip = 60;
 
-    /**
-     * UserInterface elements
-     */
-    JLabel lCurr10, lCurr2;
-    JTextField tfCurr10, tfCurr2;
-    JButton bNext, bClose;
+    private JTextField tfCurr10, tfCurr2;
 
-    /**
-     * Setups user interface
-     */
-    private void setupUI() {
-        setFont(LFSRFrame.font);
+    @Override
+    protected void setupUI() {
+        JLabel lCurr10 = new JLabel("Curr (10) : ");
+        JLabel lCurr2 = new JLabel("Curr (2) : ");
 
-        // create labels
-        lCurr10 = new JLabel("Curr (10) : ");
-        lCurr2 = new JLabel("Curr (2) : ");
-
-        // create fields
         tfCurr10 = new JTextField();
         tfCurr2 = new JTextField();
 
-        // set fonts
-        lCurr10.setFont(LFSRFrame.font);
-        lCurr2.setFont(LFSRFrame.font);
-        tfCurr10.setFont(LFSRFrame.font);
-        tfCurr2.setFont(LFSRFrame.font);
-
-        // debug elements
         @SuppressWarnings("MismatchedReadAndWriteOfArray") JLabel[] debugs = new JLabel[12];
         for(JLabel label : debugs) {
             label = new JLabel("");
@@ -62,68 +46,45 @@ public class LFSRBuilderFrame extends JFrame {
             add(label);
         }
 
-        // add elements to window
         add(lCurr10);
         add(tfCurr10);
         add(lCurr2);
         add(tfCurr2);
     }
 
-    /**
-     * Setups menu elements
-     */
-    private void setupMenu(){
-        // create menuBar
-        JMenuBar menuBar = new JMenuBar();
+    @Override
+    protected void setupMenu(){
+        JMenuBar menuBar = JMenuBarFactory.createJMenuBar(new String[]{"File"}, new String[][]{{"Save", "Close"}},
+                new ActionListener[][]{{e -> {
+                    // this is event to save current scheme to .png file
+                    JFileChooser saveFile = new JFileChooser(); // create JFileChooser
+                    saveFile.addChoosableFileFilter(new FileNameExtensionFilter("Only .png files", ".png"));
+                    int saveDialogResult = saveFile.showSaveDialog(null); // show dialog
+                    File fileToWriteTo = null;
+                    switch (saveDialogResult) {
+                        case JFileChooser.APPROVE_OPTION: // if user have chosen some file
+                            fileToWriteTo = saveFile.getSelectedFile(); // we get this file
+                            break;
+                        case JFileChooser.ERROR_OPTION:
+                        case JFileChooser.CANCEL_OPTION:
+                        default:
+                            break;
+                    }
 
-        // create fileMenu
-        JMenu fileMenu = new JMenu("File");
+                    if(fileToWriteTo != null) {
+                        // create image 600x400
+                        BufferedImage bufferedImage = new BufferedImage(600, 400, BufferedImage.TYPE_INT_RGB);
+                        Graphics graphicsToDraw = bufferedImage.createGraphics();
+                        graphicsToDraw.translate(0, -menuSkip); // translate graphics position so it can skip title and menu
+                        paintAll(graphicsToDraw); // paint with help of local paint function
+                        try {
+                            ImageIO.write(bufferedImage, "png", fileToWriteTo); // copy&paster from stackoverflow
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
 
-        // create fileMenu items
-        JMenuItem save = new JMenuItem("Save");
-        JMenuItem close = new JMenuItem("Close");
-
-        // add events
-        save.addActionListener(e -> {
-            // this is event to save current scheme to .png file
-            JFileChooser saveFile = new JFileChooser(); // create JFileChooser
-            saveFile.addChoosableFileFilter(new FileNameExtensionFilter("Only .png files", ".png"));
-            int saveDialogResult = saveFile.showSaveDialog(null); // show dialog
-            File fileToWriteTo = null;
-            switch (saveDialogResult) {
-                case JFileChooser.APPROVE_OPTION: // if user have chosen some file
-                    fileToWriteTo = saveFile.getSelectedFile(); // we get this file
-                    break;
-                case JFileChooser.ERROR_OPTION:
-                case JFileChooser.CANCEL_OPTION:
-                default:
-                    break;
-            }
-
-            if(fileToWriteTo != null) {
-                // create image 600x400
-                BufferedImage bufferedImage = new BufferedImage(600, 400, BufferedImage.TYPE_INT_RGB);
-                Graphics graphicsToDraw = bufferedImage.createGraphics();
-                graphicsToDraw.translate(0, -50); // translate graphics position so it can skip title and menu
-                paintAll(graphicsToDraw); // paint with help of local paint function
-                try {
-                    ImageIO.write(bufferedImage, "png", fileToWriteTo); // copy&paster from stackoverflow
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-
-        });
-        close.addActionListener(e -> dispose());
-
-        // add elements to menus
-        fileMenu.add(save);
-        fileMenu.add(close);
-
-        // add menus to menuBar
-        menuBar.add(fileMenu);
-
-        // add menuBar to form
+                }, e -> dispose() }});
         setJMenuBar(menuBar);
 
         MouseListener myMouseListener = new MouseListener() {
@@ -155,15 +116,11 @@ public class LFSRBuilderFrame extends JFrame {
         menuBar.addMouseListener(myMouseListener);
     }
 
-    /**
-     * Setups buttons and buttons listeners
-     */
-    private void setupButtons() {
-        // create buttons
-        bNext = new JButton("Next");
-        bClose = new JButton("Close");
+    @Override
+    protected void setupButtons() {
+        JButton bNext = new JButton("Next");
+        JButton bClose = new JButton("Close");
 
-        // add action to buttons
         bNext.addActionListener(event -> {
             curr = lfsr.next(curr); // generate next state
             repaint(); // repaint window
@@ -174,7 +131,6 @@ public class LFSRBuilderFrame extends JFrame {
         });
         bClose.addActionListener(event -> dispose());
 
-        // add buttons to form
         add(bNext);
         add(bClose);
     }
@@ -186,16 +142,11 @@ public class LFSRBuilderFrame extends JFrame {
      * @param seed default init
      */
     public LFSRBuilderFrame(LFSR lfsr, int seed) {
-        // TODO Create BuilderState to divide business logic from front
-        super();
+        super("LFSR Builder", 600, 700, new GridLayout(9, 2));
 
         this.lfsr = lfsr;
         this.curr = seed;
 
-        setTitle("LFSR Builder");
-        setResizable(false);
-        setLayout(new GridLayout(9, 2));
-        setSize(600, 700);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         addMouseListener(new MouseListener() {
             @Override
@@ -224,21 +175,16 @@ public class LFSRBuilderFrame extends JFrame {
             }
         });
 
-        setupUI();
-        setupMenu();
-
         tfCurr10.setText(String.valueOf(curr));
         tfCurr2.setText(String.format("%" + lfsr.getN() + "s", Integer.toBinaryString(curr)).replace(' ', '0'));
-        setupButtons();
-
-        setVisible(true);
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
 
-        g.translate(0, 50); // adds menuBar skip
+        g.setFont(FrameBase.baseFont);
+        g.translate(0, menuSkip); // adds menuBar skip
 
         int WIDTH = 600;
         int HEIGHT = 400;
