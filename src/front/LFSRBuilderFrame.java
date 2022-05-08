@@ -192,7 +192,7 @@ public class LFSRBuilderFrame extends JFrame {
         this.lfsr = lfsr;
         this.curr = seed;
 
-        setTitle("Tester");
+        setTitle("LFSR Builder");
         setResizable(false);
         setLayout(new GridLayout(9, 2));
         setSize(600, 700);
@@ -252,7 +252,7 @@ public class LFSRBuilderFrame extends JFrame {
 
         g.setColor(Color.black);
         g.drawString(String.valueOf(lfsr.outputOfSum(curr)), offset / 3 * 2, HEIGHT / 2); // show output of sum
-        g.drawLine(offset / 2, (int) (355 - 1.5 * offset), WIDTH - 10, (int) (HEIGHT - 1.5 * offset));
+        g.drawLine(offset / 2, (int) (HEIGHT - 1.5 * offset), WIDTH - 10, (int) (HEIGHT - 1.5 * offset));
         g.drawString("out", WIDTH - offset * 3 / 2, HEIGHT - offset * 5 / 6);
 
         // draw triggers

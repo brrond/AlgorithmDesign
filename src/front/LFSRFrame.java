@@ -123,6 +123,10 @@ public class LFSRFrame extends JFrame {
         JButton bBuild = new JButton("Build");
         bBuild.addActionListener(event -> {
             parseValues();
+            if(n > 10) {
+                handleException("To use builder you should use no more then 10 triggers.");
+                return;
+            }
             new LFSRBuilderFrame(new LFSR(n, C), seed);
         });
 
