@@ -32,7 +32,7 @@ public class LFSRFrame extends JFrame {
      *
      * @param msg massage to print
      */
-    private void handleException(String msg) {
+    public static void handleException(String msg) {
         JFrame frame = new JFrame(); // create frame
         frame.setSize(500, 200); // set its size
         frame.setLayout(new FlowLayout()); // set flow layout because we only two elements
@@ -170,6 +170,7 @@ public class LFSRFrame extends JFrame {
         // fill "Irreducible" menu
         JMenuItem clear = new JMenuItem("Clear");
         JMenuItem set = new JMenuItem("Set");
+        JMenuItem custom = new JMenuItem("Custom");
 
         // add actions
         clear.addActionListener(e -> {
@@ -179,6 +180,7 @@ public class LFSRFrame extends JFrame {
         });
         exit.addActionListener(e -> dispose());
         set.addActionListener(e -> new IrreduciblePolynomialFrame(this));
+        custom.addActionListener(e -> new CustomPolynomialsFrame());
 
         // set "File" menu
         menuBar.add(menuFile);
@@ -188,6 +190,7 @@ public class LFSRFrame extends JFrame {
         menuBar.add(menuEdit);
         menuEdit.add(clear);
         menuEdit.add(set);
+        menuEdit.add(custom);
 
         // set menuBar to window
         this.setJMenuBar(menuBar);
