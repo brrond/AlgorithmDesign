@@ -8,14 +8,25 @@ import java.awt.*;
  */
 public class IrreduciblePolynomialFrame extends JFrame {
 
+    /**
+     * {@code JList<String>} of all poolynomials
+     */
     private JList<String> listPolynomials;
-    private JScrollPane listScroll;
-    private LFSRFrame mainFrame;
 
+    /**
+     * Reference to main window ({@code LFSRFrame}) t to change values
+     */
+    private final LFSRFrame mainFrame;
+
+    /**
+     * {@code JLabel} to show selected polynomial
+     */
     private JLabel lResult;
-    private JLabel lPolynomial;
 
-    private JButton bClose;
+    /**
+     * {@code JLabel} to show the actual polynomial
+     */
+    private JLabel lPolynomial;
 
     /**
      * Method to get all irreducible polynomials
@@ -40,21 +51,30 @@ public class IrreduciblePolynomialFrame extends JFrame {
         // TODO Add read from file
     }
 
+    /**
+     * Method to create and add user interface elements
+     */
     public void setupUI() {
+        // create list
         listPolynomials = new JList<>(getListData());
         listPolynomials.setFont(LFSRFrame.font);
-        listScroll = new JScrollPane();
+
+        // make it scrollable
+        JScrollPane listScroll = new JScrollPane();
         listScroll.setViewportView(listPolynomials);
         listPolynomials.setLayoutOrientation(JList.VERTICAL);
 
+        // init labels
         lResult = new JLabel("");
         lResult.setFont(LFSRFrame.font);
 
         lPolynomial = new JLabel("");
         lPolynomial.setFont(LFSRFrame.font);
 
-        bClose = new JButton("Close");
+        // init close button
+        JButton bClose = new JButton("Close");
 
+        // add action to list
         listPolynomials.addListSelectionListener(e -> {
             if(e.getValueIsAdjusting()) {
                 return;
@@ -86,14 +106,21 @@ public class IrreduciblePolynomialFrame extends JFrame {
             lPolynomial.setText(res.substring(0, res.length() - 2));
         });
 
+        // add close action
         bClose.addActionListener(e -> this.dispose());
 
+        // add element to form
         add(listScroll);
         add(lResult);
         add(lPolynomial);
         add(bClose);
     }
 
+    /**
+     * Constructor
+     *
+     * @param mainFrame to change values in
+     */
     public IrreduciblePolynomialFrame(LFSRFrame mainFrame) {
         super();
 
