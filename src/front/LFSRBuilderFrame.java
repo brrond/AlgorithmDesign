@@ -27,7 +27,6 @@ public class LFSRBuilderFrame extends FrameBase {
      * Current state
      */
     private int curr;
-    private final int menuSkip = 60;
 
     private JTextField tfCurr10, tfCurr2;
 

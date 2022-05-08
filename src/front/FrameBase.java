@@ -15,6 +15,7 @@ public abstract class FrameBase extends JFrame {
      * All the windows use this baseFont
      */
     public static final Font baseFont = new Font(Font.SERIF, Font.PLAIN, 20);
+    public static final int menuSkip = 60;
 
     /**
      * @param baseContainer container to extract components from

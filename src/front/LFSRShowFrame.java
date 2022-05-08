@@ -5,6 +5,7 @@ import logic.LFSR;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
@@ -15,7 +16,7 @@ import java.util.List;
  * {@code JFrame} class to show the output
  * of Linear feedback shift register
  */
-public class LFSRShowFrame extends JFrame {
+public class LFSRShowFrame extends FrameBase {
 
     /**
      * Default LFSR to use
@@ -49,26 +50,17 @@ public class LFSRShowFrame extends JFrame {
      */
     private JList<String> list;
 
-    /**
-     * Setups user interface elements
-     */
-    private void setupUI() {
+    @Override
+    protected void setupUI() {
         lBin = new JLabel("BIN : ");
-        list = new JList<>(); // create list itself
+        list = new JList<>();
 
-        // init panel for Tth and Tcalc
         JPanel pT = new JPanel(new GridLayout(1, 2));
         lTth = new JLabel("Tth : ");
         lTcalc = new JLabel("Tcalc : ");
 
-        JScrollPane scrollPane = new JScrollPane(list); // init scrollPane
-        lBin.setFont(LFSRFrame.font);
-        list.setFont(LFSRFrame.font);
-        lTth.setFont(LFSRFrame.font);
-        lTcalc.setFont(LFSRFrame.font);
-        scrollPane.setFont(LFSRFrame.font);
+        JScrollPane scrollPane = new JScrollPane(list);
 
-        // add elements to form
         add(lBin);
         pT.add(lTth);
         pT.add(lTcalc);
@@ -76,65 +68,48 @@ public class LFSRShowFrame extends JFrame {
         add(scrollPane);
     }
 
-    /**
-     * Setups menu elements
-     */
-    private void setupMenu() {
-        // create menuBar itself
-        JMenuBar menuBar = new JMenuBar();
+    @Override
+    protected void setupButtons() {
 
-        // create "File" menu
-        JMenu file = new JMenu("File");
+    }
 
-        // create "File" menu elements
-        JMenuItem save = new JMenuItem("Save");
-        JMenuItem close = new JMenuItem("Close");
+    @Override
+    protected void setupMenu() {
+        JMenuBar menuBar = JMenuBarFactory.createJMenuBar(new String[] {"File"}, new String[][]{{"Save", "Close"}},
+                new ActionListener[][]{{e -> {
+                    // need to save curr bin string
+                    // Tth & Tcalc
+                    // all values
+                    // to file
+                    JFileChooser saveFile = new JFileChooser(); // create JFileChooser
+                    saveFile.addChoosableFileFilter(new FileNameExtensionFilter("Only .txt files", ".txt"));
+                    int saveDialogResult = saveFile.showSaveDialog(null); // show dialog
+                    File fileToWriteTo = null;
+                    switch (saveDialogResult) {
+                        case JFileChooser.APPROVE_OPTION: // if user have chosen some file
+                            fileToWriteTo = saveFile.getSelectedFile(); // we get this file
+                            break;
+                        case JFileChooser.ERROR_OPTION:
+                        case JFileChooser.CANCEL_OPTION:
+                        default:
+                            break;
+                    }
 
-        // add events
-        save.addActionListener(e -> {
-            // need to save curr bin string
-            // Tth & Tcalc
-            // all values
-            // to file
-            JFileChooser saveFile = new JFileChooser(); // create JFileChooser
-            saveFile.addChoosableFileFilter(new FileNameExtensionFilter("Only .txt files", ".txt"));
-            int saveDialogResult = saveFile.showSaveDialog(null); // show dialog
-            File fileToWriteTo = null;
-            switch (saveDialogResult) {
-                case JFileChooser.APPROVE_OPTION: // if user have chosen some file
-                    fileToWriteTo = saveFile.getSelectedFile(); // we get this file
-                    break;
-                case JFileChooser.ERROR_OPTION:
-                case JFileChooser.CANCEL_OPTION:
-                default:
-                    break;
-            }
-
-            // if file isn't null
-            if(fileToWriteTo != null) {
-                try (OutputStream outputStream = new FileOutputStream(fileToWriteTo); // open outputStream
-                     OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream)) { // creat outputStreamWriter
-                    StringBuilder outputBuilder = new StringBuilder(); // all output build with StringBuilder
-                    outputBuilder.append("BIN : ").append(_bin).append("\n");
-                    outputBuilder.append(lTth.getText()).append("\n");
-                    outputBuilder.append(lTcalc.getText()).append("\n");
-                    strings.forEach(str -> outputBuilder.append(str).append("\n"));
-                    outputStreamWriter.write(outputBuilder.toString()); // writer
-                } catch (IOException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
-                }
-            }
-        });
-        close.addActionListener(e -> dispose());
-
-        // add menu to menuBar
-        menuBar.add(file);
-
-        // add element to menu
-        file.add(save);
-        file.add(close);
-
-        // position menuBar
+                    // if file isn't null
+                    if(fileToWriteTo != null) {
+                        try (OutputStream outputStream = new FileOutputStream(fileToWriteTo); // open outputStream
+                             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream)) { // creat outputStreamWriter
+                            StringBuilder outputBuilder = new StringBuilder(); // all output build with StringBuilder
+                            outputBuilder.append("BIN : ").append(_bin).append("\n");
+                            outputBuilder.append(lTth.getText()).append("\n");
+                            outputBuilder.append(lTcalc.getText()).append("\n");
+                            strings.forEach(str -> outputBuilder.append(str).append("\n"));
+                            outputStreamWriter.write(outputBuilder.toString()); // writer
+                        } catch (IOException fileNotFoundException) {
+                            fileNotFoundException.printStackTrace();
+                        }
+                    }
+                }, e -> dispose()}});
         setJMenuBar(menuBar);
 
         MouseListener myMouseListener = new MouseListener() {
@@ -166,9 +141,6 @@ public class LFSRShowFrame extends JFrame {
         menuBar.addMouseListener(myMouseListener);
     }
 
-    /**
-     * Gets business logic params
-     */
     private void getInnerParams() {
         strings = new ArrayList<>(); // we have no binary string in the beginning
         _bin = new StringBuilder(); // same to bin string
@@ -182,9 +154,6 @@ public class LFSRShowFrame extends JFrame {
         }
     }
 
-    /**
-     * Sets business logic params
-     */
     private void setInnerParams() {
         lBin.setText("BIN : " + _bin);
         list.setListData(strings.toArray(new String[0]));
@@ -199,21 +168,13 @@ public class LFSRShowFrame extends JFrame {
      * @param seed the initial seed of the logic.LFSR
      */
     public LFSRShowFrame(LFSR lfsr, int seed) {
-        // TODO Create ShowState to divide business logic from front
+        super(lfsr.getN() + " " + lfsr.getC(), 600, 600, new GridLayout(3, 1));
+
         this.lfsr = lfsr;
         this.seed = seed;
 
-        setTitle(lfsr.getN() + " " + lfsr.getC());
-        setLayout(new GridLayout(3, 1));
-        setSize(600, 600);
-        setResizable(false);
-
-        setupUI();
-        setupMenu();
         getInnerParams();
         setInnerParams();
-
-        setVisible(true);
     }
 
     @Override
@@ -224,7 +185,7 @@ public class LFSRShowFrame extends JFrame {
         super.paint(g);
 
         // additional Y to skip menu
-        g.translate(0, 50);
+        g.translate(0, menuSkip);
 
         // set color and print region
         g.setColor(Color.cyan); // background color
@@ -262,6 +223,5 @@ public class LFSRShowFrame extends JFrame {
     @Override
     public void repaint() {
         super.repaint();
-        paint(getGraphics());
     }
 }
