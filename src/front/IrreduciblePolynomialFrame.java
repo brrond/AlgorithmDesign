@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * JFrame to choose polynomial coefficients
  */
-public class IrreduciblePolynomialFrame extends JFrame {
+public class IrreduciblePolynomialFrame extends FrameBase {
 
     /**
      * {@code JList<String>} of all poolynomials
@@ -51,13 +51,10 @@ public class IrreduciblePolynomialFrame extends JFrame {
         // TODO Add read from file
     }
 
-    /**
-     * Method to create and add user interface elements
-     */
+    @Override
     public void setupUI() {
         // create list
         listPolynomials = new JList<>(getListData());
-        listPolynomials.setFont(LFSRFrame.font);
 
         // make it scrollable
         JScrollPane listScroll = new JScrollPane();
@@ -66,13 +63,7 @@ public class IrreduciblePolynomialFrame extends JFrame {
 
         // init labels
         lResult = new JLabel("");
-        lResult.setFont(LFSRFrame.font);
-
         lPolynomial = new JLabel("");
-        lPolynomial.setFont(LFSRFrame.font);
-
-        // init close button
-        JButton bClose = new JButton("Close");
 
         // add action to list
         listPolynomials.addListSelectionListener(e -> {
@@ -106,14 +97,21 @@ public class IrreduciblePolynomialFrame extends JFrame {
             lPolynomial.setText(res.substring(0, res.length() - 2));
         });
 
-        // add close action
-        bClose.addActionListener(e -> this.dispose());
-
-        // add element to form
         add(listScroll);
         add(lResult);
         add(lPolynomial);
+    }
+
+    @Override
+    protected void setupButtons() {
+        JButton bClose = new JButton("Close");
+        bClose.addActionListener(e -> this.dispose());
         add(bClose);
+    }
+
+    @Override
+    protected void setupMenu() {
+
     }
 
     /**
@@ -122,19 +120,8 @@ public class IrreduciblePolynomialFrame extends JFrame {
      * @param mainFrame to change values in
      */
     public IrreduciblePolynomialFrame(LFSRFrame mainFrame) {
-        super();
+        super("Irreducible Polynomial", 400, 600, new GridLayout(4, 1));
 
         this.mainFrame = mainFrame;
-
-        setLayout(new GridLayout(4, 1));
-        setTitle("Irreducible Polynomial");
-
-        setupUI();
-
-        setFont(LFSRFrame.font);
-        setResizable(false);
-        setSize(400, 600);
-
-        setVisible(true);
     }
 }
