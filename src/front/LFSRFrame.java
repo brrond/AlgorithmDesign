@@ -4,12 +4,13 @@ import logic.LFSR;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 /**
  * Simple {@code JFrame} class to show the possibilities
  * of Linear feedback shift register
  */
-public class LFSRFrame extends JFrame {
+public class LFSRFrame extends FrameBase {
 
     /**
      * UI Elements
@@ -22,64 +23,12 @@ public class LFSRFrame extends JFrame {
     private int n, C, seed;
 
     /**
-     * The font to used in this project
-     * All the windows use this font
-     */
-    public static final Font font = new Font(Font.SERIF, Font.PLAIN, 20);
-
-    /**
-     * Prints error message msg.
-     *
-     * @param msg massage to print
-     */
-    private void handleException(String msg) {
-        JFrame frame = new JFrame(); // create frame
-        frame.setSize(500, 200); // set its size
-        frame.setLayout(new FlowLayout()); // set flow layout because we only two elements
-        JLabel label = new JLabel(msg); // create msg
-        frame.add(label);
-        JButton ok = new JButton("OK"); // create OK button
-        ok.addActionListener(event -> frame.dispose()); // set button event
-        frame.add(ok); // add button
-        frame.setVisible(true); // show frame
-    }
-
-    /**
      * Adds initial values to text fields
      */
     private void tmpInit() {
         tfN.setText("4");
         tfC.setText("10011");
         tfSeed.setText("1010");
-    }
-
-    /**
-     * Create user interface elements
-     */
-    private void setupUI() {
-        // init labels
-        JLabel lN = new JLabel("N : ");
-        JLabel lCoefficient = new JLabel("Coefficient : ");
-        JLabel lSeed = new JLabel("Seed : ");
-        lN.setFont(font);
-        lCoefficient.setFont(font);
-        lSeed.setFont(font);
-
-        // init text fields
-        tfN = new JTextField();
-        tfC = new JTextField();
-        tfSeed = new JTextField();
-        tfN.setFont(font);
-        tfC.setFont(font);
-        tfSeed.setFont(font);
-
-        // add all created elements
-        add(lN);
-        add(tfN);
-        add(lCoefficient);
-        add(tfC);
-        add(lSeed);
-        add(tfSeed);
     }
 
     /**
@@ -104,10 +53,29 @@ public class LFSRFrame extends JFrame {
         }
     }
 
-    /**
-     * Creates buttons (contains business logic)
-     */
-    private void setupButtons() {
+    @Override
+    protected void setupUI() {
+        // init labels
+        JLabel lN = new JLabel("N : ");
+        JLabel lCoefficient = new JLabel("Coefficient : ");
+        JLabel lSeed = new JLabel("Seed : ");
+
+        // init text fields
+        tfN = new JTextField();
+        tfC = new JTextField();
+        tfSeed = new JTextField();
+
+        // add all created elements
+        add(lN);
+        add(tfN);
+        add(lCoefficient);
+        add(tfC);
+        add(lSeed);
+        add(tfSeed);
+    }
+
+    @Override
+    protected void setupButtons() {
         // init show button
         JButton bShow = new JButton("Show");
         bShow.addActionListener(event -> {
@@ -141,10 +109,6 @@ public class LFSRFrame extends JFrame {
         // init exit button
         JButton bExit = new JButton("Exit");
         bExit.addActionListener(action -> System.exit(0));
-        bShow.setFont(font);
-        bBuild.setFont(font);
-        bGraph.setFont(font);
-        bExit.setFont(font);
 
         // add all components to window
         add(bShow);
@@ -153,71 +117,28 @@ public class LFSRFrame extends JFrame {
         add(bExit);
     }
 
-    /**
-     * Creates user menus
-     */
-    private void setupMenu() {
-        // create menu itself
-        JMenuBar menuBar = new JMenuBar();
-
-        // create menu elements
-        JMenu menuFile = new JMenu("File");
-        JMenu menuEdit = new JMenu("Edit");
-
-        // fill "File" menu
-        JMenuItem exit = new JMenuItem("Exit");
-
-        // fill "Irreducible" menu
-        JMenuItem clear = new JMenuItem("Clear");
-        JMenuItem set = new JMenuItem("Set");
-
-        // add actions
-        clear.addActionListener(e -> {
-            tfN.setText("");
-            tfC.setText("");
-            tfSeed.setText("");
-        });
-        exit.addActionListener(e -> dispose());
-        set.addActionListener(e -> new IrreduciblePolynomialFrame(this));
-
-        // set "File" menu
-        menuBar.add(menuFile);
-        menuFile.add(exit);
-
-        // set "Edit" menu
-        menuBar.add(menuEdit);
-        menuEdit.add(clear);
-        menuEdit.add(set);
-
-        // set menuBar to window
-        this.setJMenuBar(menuBar);
+    @Override
+    protected void setupMenu() {
+        setJMenuBar(JMenuBarFactory.createJMenuBar(new String[]{"File", "Edit"},
+                new String[][]{{"Exit"}, {"Clear", "Set"}},
+                new ActionListener[][]{new ActionListener[] { e -> dispose() }, new ActionListener[] {
+                        e -> {
+                            tfN.setText("");
+                            tfC.setText("");
+                            tfSeed.setText("");
+                        }, e -> new IrreduciblePolynomialFrame(this)
+                }}));
     }
 
     /**
      * Constructor. It initialises std params
      */
     public LFSRFrame() {
-        super();
+        super("Linear feedback shift register", 400, 400, new GridLayout(5, 2));
 
-        setLayout(new GridLayout(5, 2)); // uses GridLayout
-        setTitle("Linear feedback shift register"); // set title
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // this is main window
 
-        // set window params
-        setFont(font);
-        setResizable(false);
-        setSize(400, 400);
-
-        // init UI elements
-        setupUI();
-        setupButtons();
-        setupMenu();
-
-        // default init
         tmpInit();
-
-        // show window
-        setVisible(true);
     }
 
     /**
@@ -246,4 +167,5 @@ public class LFSRFrame extends JFrame {
     public void setCoefficient(String C) {
         tfC.setText(C);
     }
+
 }
