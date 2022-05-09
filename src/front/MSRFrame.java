@@ -1,5 +1,6 @@
 package front;
 
+import logic.MSR;
 import logic.Matrix;
 
 import javax.swing.*;
@@ -52,8 +53,42 @@ public class MSRFrame extends JFrame {
             if(seed == null || seed.getN() != N || seed.getM() != M) seed = new Matrix(N, M);
             new MSRSetSeedFrame(seed);
         });
+
         bShow.addActionListener(e -> {
-            // TODO Create show window
+            String sN = tfN.getText();
+            String sM = tfM.getText();
+            String sCa = tfCa.getText();
+            String sCb = tfCb.getText();
+            int N, M, Ca, Cb;
+            try {
+                N = Integer.parseInt(sN);
+                M = Integer.parseInt(sM);
+                Ca = Integer.parseInt(sCa);
+                Cb = Integer.parseInt(sCb);
+            } catch(NumberFormatException exception) {
+                // TODO HandleError
+                return;
+            }
+
+            if(N <= 0 || M <= 0) {
+                // TODO HandleError
+                return;
+            }
+
+            if((Ca & 1) == 0 || (Ca & N) == 0)
+
+            if(seed == null) {
+                // TODO HandleError
+                return;
+            }
+
+            try {
+                new MSRShowFrame(new MSR(Matrix.fromCoefficient(N, Ca), Matrix.fromCoefficient(M, Cb)), seed);
+            } catch(IllegalArgumentException exception) {
+                // TODO Coefficients are wrong
+            } catch (Exception exception) {
+                // TODO Something went wrong
+            }
         });
     }
 
@@ -66,7 +101,7 @@ public class MSRFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         setVisible(true);
-
+        
         initButtonListeners();
 
         tmpInit();
