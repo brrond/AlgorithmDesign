@@ -29,21 +29,21 @@ public class MSR {
         int Ta = (int) (Math.pow(2, A.getN()) - 1);
         int Tb = (int) (Math.pow(2, B.getM()) - 1);
 
-        int ta = Ta, tb = Tb;
+        /*int ta = Ta, tb = Tb;
         while(tb != 0) {
             int tmp = ta;
             ta = tb;
-            tb = ta % tb;
-        }
+            tb = tmp % tb;
+        }*/
 
-        return Ta * Tb / ta;
+        return Ta * Tb;
     }
 
     public int getTActual() {
         Matrix seed = Matrix.ones(A.getN(), B.getM());
         Matrix curr = seed.copy();
         int T = 0;
-        while(curr != seed) {
+        while(!curr.equals(seed)) {
             curr = next(curr);
             T++;
         }

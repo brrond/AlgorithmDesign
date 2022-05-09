@@ -193,4 +193,15 @@ class MatrixTest {
             assertEquals(a, a.mul(I));
         }
     }
+
+    @Test
+    void equals() {
+        for(int i = 1; i <= 100; i++) {
+            Matrix a = new Matrix(i, i);
+            for(int j = 0; j < i; j++) for (int k = 0; k < i; k++) a.set(j, k, (double) (j * k));
+            Matrix b = a.copy();
+
+            assertTrue(a.equals(b));
+        }
+    }
 }
