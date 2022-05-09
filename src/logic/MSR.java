@@ -42,7 +42,8 @@ public class MSR {
     public int getTActual() {
         Matrix seed = Matrix.ones(A.getN(), B.getM());
         Matrix curr = seed.copy();
-        int T = 0;
+        curr = next(curr);
+        int T = 1;
         while(!curr.equals(seed)) {
             curr = next(curr);
             T++;

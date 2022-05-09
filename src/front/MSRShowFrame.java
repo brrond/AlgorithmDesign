@@ -19,9 +19,8 @@ public class MSRShowFrame extends JFrame{
     private Matrix curr;
 
     private void initParams() {
-        // TODO Fix period problems
-        //lTth.setText(lTth.getText() + " " + msr.getT());
-        //lTcalc.setText(lTcalc.getText() + " " + msr.getTActual());
+        lTth.setText(lTth.getText() + " " + msr.getT());
+        lTcalc.setText(lTcalc.getText() + " " + msr.getTActual());
     }
 
     public MSRShowFrame(MSR msr, Matrix seed) {
