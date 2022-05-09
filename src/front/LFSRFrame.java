@@ -120,13 +120,14 @@ public class LFSRFrame extends FrameBase {
     @Override
     protected void setupMenu() {
         setJMenuBar(JMenuBarFactory.createJMenuBar(new String[]{"File", "Edit"},
-                new String[][]{{"Exit"}, {"Clear", "Set"}},
+                new String[][]{{"Exit"}, {"Clear", "Set", "Custom"}},
                 new ActionListener[][]{new ActionListener[] { e -> dispose() }, new ActionListener[] {
                         e -> {
                             tfN.setText("");
                             tfC.setText("");
                             tfSeed.setText("");
-                        }, e -> new IrreduciblePolynomialFrame(this)
+                        }, e -> new IrreduciblePolynomialFrame(this),
+                        e -> new CustomPolynomialsFrame()
                 }}));
     }
 
