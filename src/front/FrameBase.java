@@ -39,7 +39,7 @@ public abstract class FrameBase extends JFrame {
         return getAllComponents(this);
     }
 
-    private void setFonts() {
+    protected void setFonts() {
         for(Component c : getAllComponents()) {
             c.setFont(getFontToUse());
         }

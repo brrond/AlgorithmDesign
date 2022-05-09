@@ -4,10 +4,8 @@ import logic.MSR;
 import logic.Matrix;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class MSRFrame extends JFrame {
+public class MSRFrame {
     private JPanel mainPanel;
     private JTextField tfN;
     private JTextField tfCa;
@@ -19,8 +17,81 @@ public class MSRFrame extends JFrame {
 
     private Matrix seed = null;
 
-    private void initUI() {
+    private class MSRFrameInner extends FrameBase {
+        public MSRFrameInner() {
+            super("Something here", 400, 480, null);
+        }
 
+        @Override
+        protected void setupUI() {
+
+        }
+
+        @Override
+        protected void setupButtons() {
+            bExit.addActionListener(e -> System.exit(0));
+
+            bSetSeed.addActionListener(e -> {
+                String sN = tfN.getText();
+                String sM = tfM.getText();
+                int N, M;
+                try {
+                    N = Integer.parseInt(sN);
+                    M = Integer.parseInt(sM);
+                } catch (NumberFormatException exception) {
+                    handleException("N & M should be integers");
+                    return;
+                }
+
+                if(N <= 0 || N > 10 || M <= 0 || M > 10) {
+                    handleException("N & M <= 0 || N & M > 10");
+                    return;
+                }
+
+                if(seed == null || seed.getN() != N || seed.getM() != M) seed = new Matrix(N, M);
+                new MSRSetSeedFrame(seed);
+            });
+
+            bShow.addActionListener(e -> {
+                String sN = tfN.getText();
+                String sM = tfM.getText();
+                String sCa = tfCa.getText();
+                String sCb = tfCb.getText();
+                int N, M, Ca, Cb;
+                try {
+                    N = Integer.parseInt(sN);
+                    M = Integer.parseInt(sM);
+                    Ca = Integer.parseInt(sCa, 2);
+                    Cb = Integer.parseInt(sCb, 2);
+                } catch(NumberFormatException exception) {
+                    handleException("N, M, Ca, Cb should be integer");
+                    return;
+                }
+
+                if((Ca & 1) == 0 || (Ca & N) == 0 || ((Ca & (1 << N)) == 0) || ((Cb & (1 << M)) == 0)) {
+                    handleException("Ca[0] * Ca[N] != 1 || Cb[0] * Cb[N] != 1");
+                    return;
+                }
+
+                if(seed == null) {
+                    handleException("seed == null. Init seed first");
+                    return;
+                }
+
+                try {
+                    new MSRShowFrame(new MSR(Matrix.fromCoefficient(N, Ca), Matrix.fromCoefficient(M, Cb)), seed);
+                } catch(IllegalArgumentException exception) {
+                    handleException(exception.getMessage());
+                } catch (Exception ignored) {
+
+                }
+            });
+        }
+
+        @Override
+        protected void setupMenu() {
+
+        }
     }
 
     private void tmpInit() {
@@ -30,80 +101,14 @@ public class MSRFrame extends JFrame {
         tfCb.setText("11001");
     }
 
-    private void initButtonListeners() {
-        bExit.addActionListener(e -> System.exit(0));
-
-        bSetSeed.addActionListener(e -> {
-            String sN = tfN.getText();
-            String sM = tfM.getText();
-            int N, M;
-            try {
-                N = Integer.parseInt(sN);
-                M = Integer.parseInt(sM);
-            } catch (NumberFormatException exception) {
-                // TODO Add error msg
-                return;
-            }
-
-            if(N <= 0 || N > 10 || M <= 0 || M > 10) {
-                // TODO Add error msg
-                return;
-            }
-
-            if(seed == null || seed.getN() != N || seed.getM() != M) seed = new Matrix(N, M);
-            new MSRSetSeedFrame(seed);
-        });
-
-        bShow.addActionListener(e -> {
-            String sN = tfN.getText();
-            String sM = tfM.getText();
-            String sCa = tfCa.getText();
-            String sCb = tfCb.getText();
-            int N, M, Ca, Cb;
-            try {
-                N = Integer.parseInt(sN);
-                M = Integer.parseInt(sM);
-                Ca = Integer.parseInt(sCa);
-                Cb = Integer.parseInt(sCb);
-            } catch(NumberFormatException exception) {
-                // TODO HandleError
-                return;
-            }
-
-            if(N <= 0 || M <= 0) {
-                // TODO HandleError
-                return;
-            }
-
-            if((Ca & 1) == 0 || (Ca & N) == 0)
-
-            if(seed == null) {
-                // TODO HandleError
-                return;
-            }
-
-            try {
-                new MSRShowFrame(new MSR(Matrix.fromCoefficient(N, Ca), Matrix.fromCoefficient(M, Cb)), seed);
-            } catch(IllegalArgumentException exception) {
-                // TODO Coefficients are wrong
-            } catch (Exception exception) {
-                // TODO Something went wrong
-            }
-        });
-    }
-
     public MSRFrame() {
-        super();
+        MSRFrameInner msrFrameInner = new MSRFrameInner();
 
-        setSize(400, 480);
-        setResizable(false);
-        setContentPane(mainPanel);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        setVisible(true);
-        
-        initButtonListeners();
+        msrFrameInner.setContentPane(mainPanel);
+        msrFrameInner.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        msrFrameInner.setFonts();
 
         tmpInit();
     }
+
 }

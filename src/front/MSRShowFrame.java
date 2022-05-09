@@ -6,7 +6,7 @@ import logic.Matrix;
 import javax.swing.*;
 import java.awt.*;
 
-public class MSRShowFrame extends JFrame{
+public class MSRShowFrame {
     private JPanel mainPanel;
     private JButton nextButton;
     private JButton closeButton;
@@ -18,6 +18,53 @@ public class MSRShowFrame extends JFrame{
     private final MSR msr;
     private Matrix curr;
 
+    private class MSRShowFrameInner extends FrameBase {
+
+        public MSRShowFrameInner() {
+            super("MSR show", 600, 900, null);
+        }
+
+        @Override
+        protected void setupUI() {
+
+        }
+
+        @Override
+        protected void setupButtons() {
+            closeButton.addActionListener(e -> dispose());
+            nextButton.addActionListener(e -> {
+                curr = msr.next(curr);
+                repaint();
+            });
+        }
+
+        @Override
+        protected void setupMenu() {
+
+        }
+
+        public void paint(Graphics g) {
+            super.paint(g);
+
+            int WIDTH = 600, HEIGHT = 600;
+            int offset = 50;
+
+            g.setFont(getFontToUse());
+            g.setColor(Color.cyan);
+            g.fillRect(0, 0, WIDTH, HEIGHT);
+
+            int xStep = (WIDTH - 2 * offset) / curr.getM();
+            int yStep = (HEIGHT - 2 * offset) / curr.getN();
+
+            g.setColor(Color.black);
+            for(int i = 0; i < curr.getN(); i++) {
+                for (int j = 0; j < curr.getM(); j++) {
+                    g.drawString(String.valueOf((int)(double) curr.get(i, j)), offset + j * xStep, offset + i * yStep);
+                }
+            }
+        }
+    }
+
     private void initParams() {
         lTth.setText(lTth.getText() + " " + msr.getT());
         lTcalc.setText(lTcalc.getText() + " " + msr.getTActual());
@@ -27,40 +74,11 @@ public class MSRShowFrame extends JFrame{
         this.msr = msr;
         curr = seed.copy();
 
-        setTitle("MSR Show");
-        setSize(600, 900);
-        setResizable(false);
+        MSRShowFrameInner msrShowFrameInner = new MSRShowFrameInner();
+        msrShowFrameInner.setContentPane(mainPanel);
+        msrShowFrameInner.setFonts();
 
-        setContentPane(mainPanel);
-
-        setVisible(true);
-        closeButton.addActionListener(e -> dispose());
-        nextButton.addActionListener(e -> {
-            curr = msr.next(curr);
-            repaint();
-        });
         initParams();
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-
-        int WIDTH = 600, HEIGHT = 600;
-        int offset = 50;
-
-        g.setColor(Color.cyan);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
-
-        int xStep = (WIDTH - 2 * offset) / curr.getM();
-        int yStep = (HEIGHT - 2 * offset) / curr.getN();
-
-        g.setColor(Color.black);
-        for(int i = 0; i < curr.getN(); i++) {
-            for (int j = 0; j < curr.getM(); j++) {
-                g.drawString(String.valueOf((int)(double) curr.get(i, j)), offset + j * xStep, offset + i * yStep);
-            }
-        }
     }
 
 }
