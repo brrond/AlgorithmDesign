@@ -1,74 +1,70 @@
 package front;
 
-import logic.Polynomial;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
-// TODO Add comments and javadoc
-// TODO Create write data method
+/**
+ * Frame to create base of custom polynomials
+ */
 public class CustomPolynomialsFrame extends JFrame {
 
-    private final String path = "./resource/custom_polynomials.txt";
+    /**
+     * Path to custom polynomials
+     */
+    public final String path = "./resource/custom_polynomials.ser";
 
+    /**
+     * Column names
+     */
+    private final String[] columnNames = new String[]{"N", "Num"};
+
+    /**
+     * Actual model with data
+     */
+    private DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+
+    /**
+     * <code>JTable</code> to show polynomials
+     */
     private JTable table;
 
-    private List<List<String>> data;
-    private final String[] columnNames = new String[]{};
-
-    private void readDataFromFile() {
-        data = new ArrayList<>();
-        File file = new File(path);
-        if(file.exists()) {
-            try (FileInputStream fileInputStream = new FileInputStream(file);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-                data = (List<List<String>>) objectInputStream.readObject();
-                //Polynomial polynomial = (Polynomial) objectInputStream.readObject();
-                //data.add(List.of(polynomial.toString().split(" ")));
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void saveDataToFile() {
-        File file = new File(path);
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
-            objectOutputStream.writeObject(data);
-//            for (List<String> datum : data) {
-//                //noinspection ConstantConditions
-//                objectOutputStream.writeObject(new Polynomial((String[]) datum.toArray()));
-//            }
-        } catch (IOException | ClassCastException e) {
+    /**
+     * Saves model to file (serialize)
+     */
+    private void saveModel() {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(path);
+            ObjectOutputStream outputStream = new ObjectOutputStream(fileOutputStream)) {
+            outputStream.writeObject(model);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static String[][] fromListListToStringMatrix(List<List<String>> l) {
-        if(l == null) {
-            return null;
-        }
-        String[][] data = new String[l.size()][3];
-        for (int i = 0; i < l.size(); i++) {
-            for(int j = 0; j < 3; j++) {
-                data[i][j] = l.get(i).get(j);
+    /**
+     * Load model from file (deserialize)
+     */
+    private void loadModel() {
+        File file = new File(path);
+        if(file.exists()) {
+            try (FileInputStream fileInputStream = new FileInputStream(path);
+                ObjectInputStream inputStream = new ObjectInputStream(fileInputStream)) {
+                model = (DefaultTableModel) inputStream.readObject();
+            } catch (IOException | ClassNotFoundException | ClassCastException e) {
+                if(file.delete()) loadModel();
+                return;
             }
+            table.setModel(model);
         }
-        return data;
     }
 
     private void setupUI() {
-        table = new JTable(new Object[0][3], columnNames);
+        table = new JTable(model);
         table.setDefaultEditor(Object.class, null);
         table.setFont(LFSRFrame.font);
-
-        setTable();
 
         JPanel panel = new JPanel(new GridLayout(4, 2));
         panel.setFont(LFSRFrame.font);
@@ -97,26 +93,14 @@ public class CustomPolynomialsFrame extends JFrame {
             tfNum.setText("");
         });
         bDelete.addActionListener(e -> {
-            int[] selected = table.getSelectedRows();
-            if(selected != null && selected.length != 0) {
-                // delete rows
-                for (int i = 0; i < selected.length; i++) data.remove(selected[i] - i);
-                // TODO Make sure it works
-                // then save
-                saveDataToFile();
-
-                // update table
-                setTable();
-            }
+            int selected = table.getSelectedRow();
+            model.removeRow(selected);
         });
         bAdd.addActionListener(e -> {
-            // TODO Create add action
-            // getData from user
             String sN = tfN.getText();
             String sNum = tfNum.getText();
 
-            // then make sure they are fine
-            int n = -1, num = -1;
+            int n, num;
             try {
                 n = Integer.parseInt(sN);
             } catch(NumberFormatException exception) {
@@ -141,14 +125,7 @@ public class CustomPolynomialsFrame extends JFrame {
                 return;
             }
 
-            // then add new row to data
-            data.add(List.of(new String[]{sN, sNum, Integer.toBinaryString(num)}));
-
-            // then save
-            saveDataToFile();
-
-            // update table
-            setTable();
+            model.addRow(new String[]{sN, sNum});
         });
 
         panel.add(lN);
@@ -164,18 +141,24 @@ public class CustomPolynomialsFrame extends JFrame {
         add(panel);
     }
 
-    private void setTable() {
-
-    }
-
     public CustomPolynomialsFrame() {
         setTitle("Custom table");
         setSize(400, 400);
         setLayout(new GridLayout(2, 1));
 
-        readDataFromFile();
         setupUI();
+        loadModel(); // on start of the frame should load data
+
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         setVisible(true);
     }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        saveModel(); // when JFrame disposed
+                     // saves data to file
+    }
+
 }
