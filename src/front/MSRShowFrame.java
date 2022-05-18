@@ -15,6 +15,13 @@ public class MSRShowFrame {
     private JLabel lTb;
     private JLabel lTcalc;
 
+    private JButton autoButton;
+    private JTextField speedTextField;
+    private boolean turnedOn = false;
+    private Timer timer = new Timer(0, e -> nextButton.doClick());
+
+    private final MSRShowFrameInner msrShowFrameInner;
+
     private final MSR msr;
     private Matrix curr;
 
@@ -36,6 +43,7 @@ public class MSRShowFrame {
                 curr = msr.next(curr);
                 repaint();
             });
+            autoButton.addActionListener(e -> toggleAuto());
         }
 
         @Override
@@ -63,6 +71,35 @@ public class MSRShowFrame {
                 }
             }
         }
+
+        public void handleException(String msg) {
+            super.handleException(msg);
+        }
+    }
+
+    private void toggleAuto() {
+        int speed;
+        try {
+            speed = Integer.parseInt(speedTextField.getText());
+        } catch(NumberFormatException e) {
+            msrShowFrameInner.handleException("Speed should be Integer number");
+            speed = 10;
+        }
+
+        double everyNSec = 60. / speed;
+
+        if(turnedOn) {
+            // turn off
+            timer.stop();
+            autoButton.setText("Start");
+        } else {
+            // think about it
+            timer.setDelay((int) (everyNSec * 1000));
+            timer.start();
+            autoButton.setText("Stop");
+        }
+
+        turnedOn = !turnedOn;
     }
 
     private void initParams() {
@@ -74,7 +111,7 @@ public class MSRShowFrame {
         this.msr = msr;
         curr = seed.copy();
 
-        MSRShowFrameInner msrShowFrameInner = new MSRShowFrameInner();
+        msrShowFrameInner = new MSRShowFrameInner();
         msrShowFrameInner.setContentPane(mainPanel);
         msrShowFrameInner.setFonts();
 
