@@ -10,13 +10,13 @@ public class MSRShowFrame {
     private JPanel mainPanel;
     private JButton nextButton;
     private JButton closeButton;
-    private JLabel lTa;
     private JLabel lTth;
-    private JLabel lTb;
     private JLabel lTcalc;
 
     private JButton autoButton;
     private JTextField speedTextField;
+    private JButton statButton;
+    private JButton button2;
     private boolean turnedOn = false;
     private Timer timer = new Timer(0, e -> nextButton.doClick());
 
@@ -44,6 +44,10 @@ public class MSRShowFrame {
                 repaint();
             });
             autoButton.addActionListener(e -> toggleAuto());
+            statButton.addActionListener(e -> {
+                // TODO Do it in more professional way
+                double Mx = (- 1. / msr.getT());
+                handleException("M[x] = " + Mx + " D[x] = " + (1 - Math.pow(Mx, 2))); });
         }
 
         @Override
@@ -70,6 +74,9 @@ public class MSRShowFrame {
                     g.drawString(String.valueOf((int)(double) curr.get(i, j)), offset + j * xStep, offset + i * yStep);
                 }
             }
+
+            g.drawRect((curr.getM() - 1) * xStep + offset / 2, (curr.getN() - 1) * yStep + offset / 2,
+                     offset, offset);
         }
 
         public void handleException(String msg) {

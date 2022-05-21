@@ -24,20 +24,20 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="7591b" class="javax.swing.JLabel" binding="lTa">
+              <component id="f0940" class="javax.swing.JLabel" binding="lTth">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Ta : "/>
+                  <text value="Tth : "/>
                 </properties>
               </component>
-              <component id="f0940" class="javax.swing.JLabel" binding="lTth">
+              <component id="3d2d6" class="javax.swing.JButton" binding="statButton" default-binding="true">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Tth : "/>
+                  <text value="Stat"/>
                 </properties>
               </component>
             </children>
@@ -50,20 +50,22 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="6648" class="javax.swing.JLabel" binding="lTb">
+              <component id="a72e3" class="javax.swing.JLabel" binding="lTcalc">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Tb : "/>
+                  <text value="Tcalc : "/>
                 </properties>
               </component>
-              <component id="a72e3" class="javax.swing.JLabel" binding="lTcalc">
+              <component id="9eb0e" class="javax.swing.JButton" binding="button2" default-binding="true">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Tcalc : "/>
+                  <enabled value="false"/>
+                  <hideActionText value="false"/>
+                  <text value="Button"/>
                 </properties>
               </component>
             </children>
