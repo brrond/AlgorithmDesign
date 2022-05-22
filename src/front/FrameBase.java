@@ -1,7 +1,12 @@
 package front;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +64,35 @@ public abstract class FrameBase extends JFrame {
         setFonts();
 
         setVisible(true);
+    }
+
+    protected void savePNG(int WIDTH, int HEIGHT) {
+        // this is event to save current scheme to .png file
+        JFileChooser saveFile = new JFileChooser(); // create JFileChooser
+        saveFile.addChoosableFileFilter(new FileNameExtensionFilter("Only .png files", ".png"));
+        int saveDialogResult = saveFile.showSaveDialog(null); // show dialog
+        File fileToWriteTo = null;
+        switch (saveDialogResult) {
+            case JFileChooser.APPROVE_OPTION: // if user have chosen some file
+                fileToWriteTo = saveFile.getSelectedFile(); // we get this file
+                break;
+            case JFileChooser.ERROR_OPTION:
+            case JFileChooser.CANCEL_OPTION:
+            default:
+                break;
+        }
+
+        if(fileToWriteTo != null) {
+            BufferedImage bufferedImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+            Graphics graphicsToDraw = bufferedImage.createGraphics();
+            graphicsToDraw.translate(0, -menuSkip); // translate graphics position so it can skip title and menu
+            paintAll(graphicsToDraw); // paint with help of local paint function
+            try {
+                ImageIO.write(bufferedImage, "png", fileToWriteTo); // copy&paster from stackoverflow
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**

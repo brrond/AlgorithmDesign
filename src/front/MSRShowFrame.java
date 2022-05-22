@@ -5,6 +5,7 @@ import logic.Matrix;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class MSRShowFrame {
     private JPanel mainPanel;
@@ -49,16 +50,24 @@ public class MSRShowFrame {
 
         @Override
         protected void setupMenu() {
-
+            setJMenuBar(JMenuBarFactory.createJMenuBar(new String[]{"File"},
+                    new String[][]{{"Save", "Exit"}},
+                    new ActionListener[][]{
+                            new ActionListener[] {
+                                    e -> savePNG(600, 600),
+                                    e -> dispose()}
+                    }));
         }
 
         public void paint(Graphics g) {
             super.paint(g);
 
+            g.setFont(getFontToUse());
+            g.translate(0, menuSkip); // adds menuBar skip
+
             int WIDTH = 600, HEIGHT = 600;
             int offset = 50;
 
-            g.setFont(getFontToUse());
             g.setColor(Color.cyan);
             g.fillRect(0, 0, WIDTH, HEIGHT);
 

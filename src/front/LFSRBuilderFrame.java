@@ -54,36 +54,7 @@ public class LFSRBuilderFrame extends FrameBase {
     @Override
     protected void setupMenu(){
         JMenuBar menuBar = JMenuBarFactory.createJMenuBar(new String[]{"File"}, new String[][]{{"Save", "Close"}},
-                new ActionListener[][]{{e -> {
-                    // this is event to save current scheme to .png file
-                    JFileChooser saveFile = new JFileChooser(); // create JFileChooser
-                    saveFile.addChoosableFileFilter(new FileNameExtensionFilter("Only .png files", ".png"));
-                    int saveDialogResult = saveFile.showSaveDialog(null); // show dialog
-                    File fileToWriteTo = null;
-                    switch (saveDialogResult) {
-                        case JFileChooser.APPROVE_OPTION: // if user have chosen some file
-                            fileToWriteTo = saveFile.getSelectedFile(); // we get this file
-                            break;
-                        case JFileChooser.ERROR_OPTION:
-                        case JFileChooser.CANCEL_OPTION:
-                        default:
-                            break;
-                    }
-
-                    if(fileToWriteTo != null) {
-                        // create image 600x400
-                        BufferedImage bufferedImage = new BufferedImage(600, 400, BufferedImage.TYPE_INT_RGB);
-                        Graphics graphicsToDraw = bufferedImage.createGraphics();
-                        graphicsToDraw.translate(0, -menuSkip); // translate graphics position so it can skip title and menu
-                        paintAll(graphicsToDraw); // paint with help of local paint function
-                        try {
-                            ImageIO.write(bufferedImage, "png", fileToWriteTo); // copy&paster from stackoverflow
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-
-                }, e -> dispose() }});
+                new ActionListener[][]{{e -> savePNG(600, 400), e -> dispose() }});
         setJMenuBar(menuBar);
 
         MouseListener myMouseListener = new MouseListener() {
