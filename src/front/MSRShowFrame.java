@@ -44,10 +44,7 @@ public class MSRShowFrame {
                 repaint();
             });
             autoButton.addActionListener(e -> toggleAuto());
-            statButton.addActionListener(e -> {
-                // TODO Do it in more professional way
-                double Mx = (- 1. / msr.getT());
-                handleException("M[x] = " + Mx + " D[x] = " + (1 - Math.pow(Mx, 2))); });
+            statButton.addActionListener(e -> new MSRStatFrame(msr));
         }
 
         @Override

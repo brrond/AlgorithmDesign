@@ -50,4 +50,18 @@ public class MSR {
         }
         return T;
     }
+
+    /**
+     * @return expected value of binary sequence
+     */
+    public double getMx() {
+        return - 1. / getT();
+    }
+
+    /**
+     * @return dispersion of binary sequence
+     */
+    public double getDx() {
+        return 1. - Math.pow(getMx(), 2);
+    }
 }
