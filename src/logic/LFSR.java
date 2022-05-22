@@ -91,6 +91,20 @@ public class LFSR {
     }
 
     /**
+     * @return expected value of binary sequence
+     */
+    public double getMx() {
+        return - 1. / getT();
+    }
+
+    /**
+     * @return dispersion of binary sequence
+     */
+    public double getDx() {
+        return 1. - Math.pow(getMx(), 2);
+    }
+
+    /**
      * Method to get basic integer iterable from curr {@code seed}
      *
      * @param seed basic state of triggers
