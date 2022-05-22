@@ -38,7 +38,13 @@ public class MSRStatFrame {
 
         @Override
         protected void setupMenu() {
-
+            setJMenuBar(JMenuBarFactory.createJMenuBar(new String[]{"File"},
+                    new String[][]{{"Save", "Exit"}},
+                    new ActionListener[][]{
+                            new ActionListener[] {
+                                    e -> savePNG(400, 400),
+                                    e -> dispose()}
+                    }));
         }
 
         @Override
@@ -46,6 +52,7 @@ public class MSRStatFrame {
             super.paint(g);
 
             g.setFont(getFontToUse());
+            g.translate(0, menuSkip);
 
             final int WIDTH = 400;
             final int HEIGHT = 400;
