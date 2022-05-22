@@ -126,7 +126,7 @@ public class LFSRFrame extends FrameBase {
                             tfN.setText("");
                             tfC.setText("");
                             tfSeed.setText("");
-                        }, e -> new IrreduciblePolynomialFrame(this),
+                        }, e -> new LFSRIrreduciblePolynomialFrame(this),
                         e -> new CustomPolynomialsFrame()
                 }}));
     }

@@ -4,6 +4,7 @@ import logic.MSR;
 import logic.Matrix;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 
 public class MSRFrame {
     private JPanel mainPanel;
@@ -16,6 +17,8 @@ public class MSRFrame {
     private JButton bExit;
 
     private Matrix seed = null;
+
+    private MSRFrame getMSRFrame() { return this; }
 
     private class MSRFrameInner extends FrameBase {
         public MSRFrameInner() {
@@ -90,7 +93,15 @@ public class MSRFrame {
 
         @Override
         protected void setupMenu() {
-
+            setJMenuBar(JMenuBarFactory.createJMenuBar(new String[]{"File", "Edit"},
+                    new String[][]{{"Exit"}, {"Clear", "Irreducible", "Custom"}},
+                    new ActionListener[][]{
+                            new ActionListener[] {e -> dispose()},
+                            new ActionListener[] {
+                                e -> {tfN.setText(""); tfM.setText(""); tfCa.setText(""); tfCb.setText("");},
+                                e -> new MSRIrreduciblePolynomialFrame(getMSRFrame()),
+                                e -> new CustomPolynomialsFrame()}
+                    }));
         }
     }
 
@@ -111,4 +122,27 @@ public class MSRFrame {
         tmpInit();
     }
 
+    public void setN(int N) {
+        tfN.setText(String.valueOf(N));
+    }
+
+    public void setM(int M) {
+        tfM.setText(String.valueOf(M));
+    }
+
+    public void setCa(int Ca) {
+        setCa(Integer.toBinaryString(Ca));
+    }
+
+    public void setCa(String Ca) {
+        tfCa.setText(Ca);
+    }
+
+    public void setCb(int Cb) {
+        setCb(Integer.toBinaryString(Cb));
+    }
+
+    public void setCb(String Cb) {
+        tfCb.setText(Cb);
+    }
 }
