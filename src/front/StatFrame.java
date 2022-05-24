@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class MSRStatFrame {
+public class StatFrame {
 
     private JButton closeButton;
     private JLabel lMx;
@@ -14,11 +14,11 @@ public class MSRStatFrame {
     private int T;
     private double Mx, Dx;
 
-    private final MSRStatFrameInner msrStatFrameInner;
+    private final StatFrameInner msrStatFrameInner;
 
-    private class MSRStatFrameInner extends FrameBase {
+    private class StatFrameInner extends FrameBase {
 
-        public MSRStatFrameInner() {
+        public StatFrameInner() {
             super("Stat frame", 400, 600, null);
         }
 
@@ -98,12 +98,12 @@ public class MSRStatFrame {
         }
     }
 
-    public MSRStatFrame(int T, double Mx, double Dx) {
+    public StatFrame(int T, double Mx, double Dx) {
         this.T = T;
         this.Mx = Mx;
         this.Dx = Dx;
 
-        msrStatFrameInner = new MSRStatFrameInner();
+        msrStatFrameInner = new StatFrameInner();
         msrStatFrameInner.setContentPane(mainPanel);
         msrStatFrameInner.setFonts();
     }

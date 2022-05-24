@@ -53,8 +53,9 @@ public class LFSRBuilderFrame extends FrameBase {
 
     @Override
     protected void setupMenu(){
-        JMenuBar menuBar = JMenuBarFactory.createJMenuBar(new String[]{"File"}, new String[][]{{"Save", "Close"}},
-                new ActionListener[][]{{e -> savePNG(600, 400), e -> dispose() }});
+        JMenuBar menuBar = JMenuBarFactory.createJMenuBar(new String[]{"File", "View"}, new String[][]{{"Save", "Close"}, {"Stat"}},
+                new ActionListener[][]{{e -> savePNG(600, 400), e -> dispose() },
+                        { e -> new StatFrame(lfsr.getTActual(), lfsr.getMx(), lfsr.getDx())}});
         setJMenuBar(menuBar);
 
         MouseListener myMouseListener = new MouseListener() {

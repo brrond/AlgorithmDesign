@@ -75,7 +75,7 @@ public class LFSRShowFrame extends FrameBase {
 
     @Override
     protected void setupMenu() {
-        JMenuBar menuBar = JMenuBarFactory.createJMenuBar(new String[] {"File"}, new String[][]{{"Save", "Close"}},
+        JMenuBar menuBar = JMenuBarFactory.createJMenuBar(new String[] {"File", "View"}, new String[][]{{"Save", "Close"}, {"Stat"}},
                 new ActionListener[][]{{e -> {
                     // need to save curr bin string
                     // Tth & Tcalc
@@ -109,7 +109,7 @@ public class LFSRShowFrame extends FrameBase {
                             fileNotFoundException.printStackTrace();
                         }
                     }
-                }, e -> dispose()}});
+                }, e -> dispose()}, {e -> new StatFrame(lfsr.getTActual(), lfsr.getMx(), lfsr.getDx())}});
         setJMenuBar(menuBar);
 
         MouseListener myMouseListener = new MouseListener() {

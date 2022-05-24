@@ -45,7 +45,7 @@ public class MSRShowFrame {
                 repaint();
             });
             autoButton.addActionListener(e -> toggleAuto());
-            statButton.addActionListener(e -> new MSRStatFrame(msr.getTOfElement(msr.getN() - 1, msr.getM() - 1),
+            statButton.addActionListener(e -> new StatFrame(msr.getTOfElement(msr.getN() - 1, msr.getM() - 1),
                                                                 msr.getMx(),
                                                                 msr.getDx()));
         }
