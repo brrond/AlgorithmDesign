@@ -1,12 +1,8 @@
 package front;
 
-import logic.MSR;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 
 public class MSRStatFrame {
 
@@ -15,20 +11,21 @@ public class MSRStatFrame {
     private JLabel lDx;
     private JPanel mainPanel;
 
-    private MSR msr;
+    private int T;
+    private double Mx, Dx;
 
     private final MSRStatFrameInner msrStatFrameInner;
 
     private class MSRStatFrameInner extends FrameBase {
 
         public MSRStatFrameInner() {
-            super("MSR Stat frame", 400, 600, null);
+            super("Stat frame", 400, 600, null);
         }
 
         @Override
         protected void setupUI() {
-            lMx.setText("M[x] : " + msr.getMx());
-            lDx.setText("D[x] : " + msr.getDx());
+            lMx.setText("M[x] : " + Mx);
+            lDx.setText("D[x] : " + Dx);
         }
 
         @Override
@@ -56,6 +53,7 @@ public class MSRStatFrame {
 
             final int WIDTH = 400;
             final int HEIGHT = 400;
+            final int PICKS_COUNT = 4;
 
             // paint autocorrelation function
             g.setColor(Color.cyan);
@@ -66,31 +64,44 @@ public class MSRStatFrame {
             g.drawLine(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
             g.drawLine(0, HEIGHT / 2, WIDTH, HEIGHT / 2);
 
-            // draw function
-            g.setColor(Color.red);
-            g.drawLine(WIDTH / 2, (int) (1. / 3 * HEIGHT), (int) (1. / 4 * WIDTH), HEIGHT / 2);
-            g.drawLine(WIDTH / 2, (int) (1. / 3 * HEIGHT), (int) (3. / 4 * WIDTH), HEIGHT / 2);
+            for(double i = 1.; i <= PICKS_COUNT; i++) {
+                // draw function
+                g.setColor(Color.red);
+                g.drawLine((int) (WIDTH * i / PICKS_COUNT), (int) (1. / 5 * HEIGHT),
+                        (int) (WIDTH * i / PICKS_COUNT) - 5, HEIGHT / 2);
+                g.drawLine((int) (WIDTH * i / PICKS_COUNT), (int) (1. / 5 * HEIGHT),
+                        (int) (WIDTH * i / PICKS_COUNT) + 5, HEIGHT / 2);
 
-            // draw axis comments
+                // draw axis stick
+                g.setColor(Color.black);
+                g.drawLine((int) (WIDTH * i / PICKS_COUNT) - 5, HEIGHT / 2 - 5,
+                        (int) (WIDTH * i / PICKS_COUNT) - 5, HEIGHT / 2 + 5);
+                g.drawLine((int) (WIDTH * i / PICKS_COUNT) + 5, HEIGHT / 2 - 5,
+                        (int) (WIDTH * i / PICKS_COUNT) + 5, HEIGHT / 2 + 5);
+
+                // draw the rest of the function
+                g.setColor(Color.red);
+                g.drawLine((int) (WIDTH * (i - 1) / PICKS_COUNT) + 5, HEIGHT / 2,
+                        (int) (WIDTH * i / PICKS_COUNT) - 5, HEIGHT / 2);
+            }
+
             g.setColor(Color.black);
-            g.drawLine((int) (1. / 4 * WIDTH), HEIGHT / 2 - 5, (int) (1. / 4 * WIDTH), HEIGHT / 2 + 5);
-            g.drawLine((int) (3. / 4 * WIDTH), HEIGHT / 2 - 5, (int) (3. / 4 * WIDTH), HEIGHT / 2 + 5);
-            g.drawLine(WIDTH / 2 - 5, (int) (1. / 3 * HEIGHT), WIDTH / 2 + 5, (int) (1. / 3 * HEIGHT));
+            for(int i = -PICKS_COUNT / 2 + 1, j = 1; i < PICKS_COUNT / 2; i++, j++) {
+                g.drawString(String.valueOf(T * i), (int) (WIDTH * (double)j / PICKS_COUNT), HEIGHT / 2 + 20);
+            }
 
-            // draw comments
-            g.drawString(String.valueOf((-1) * msr.getT()), (int) ((1. / 4 * WIDTH) - 15), HEIGHT / 2 + 20);
-            g.drawString(String.valueOf(msr.getT()), (int) ((3. / 4 * WIDTH) - 15), HEIGHT / 2 + 20);
-            g.drawString("-1", WIDTH / 2 + 20, (int) (1. / 3 * HEIGHT));
+            // draw axis stick for y=1
+            g.drawLine(WIDTH / 2 - 5, (int) (1. / 5 * HEIGHT), WIDTH / 2 + 5, (int) (1. / 5 * HEIGHT));
 
-            // draw the rest of the function
-            g.setColor(Color.red);
-            g.drawLine(0, HEIGHT / 2, (int) (1. / 4 * WIDTH), HEIGHT / 2);
-            g.drawLine((int) (3. / 4 * WIDTH), HEIGHT / 2, WIDTH, HEIGHT / 2);
+            // draw comments for y = 1
+            g.drawString("1", WIDTH / 2 + 20, (int) (1. / 5 * HEIGHT));
         }
     }
 
-    public MSRStatFrame(MSR msr) {
-        this.msr = msr;
+    public MSRStatFrame(int T, double Mx, double Dx) {
+        this.T = T;
+        this.Mx = Mx;
+        this.Dx = Dx;
 
         msrStatFrameInner = new MSRStatFrameInner();
         msrStatFrameInner.setContentPane(mainPanel);

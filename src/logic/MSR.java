@@ -1,5 +1,7 @@
 package logic;
 
+import java.util.Arrays;
+
 // Matrix shift register
 public class MSR {
 
@@ -51,6 +53,37 @@ public class MSR {
         return T;
     }
 
+    public int getTActualForRow(int row) {
+        if(row < 0 || row >= A.getN()) throw new IllegalArgumentException("row is invalid");
+        Matrix seed = Matrix.ones(A.getN(), B.getM());
+        Matrix curr = seed.copy();
+        curr = next(curr);
+        int T = 1;
+        while(!Arrays.equals(curr.getRow(row), seed.getRow(row))) {
+            curr = next(curr);
+            T++;
+        }
+        return T;
+    }
+
+    public int getTActualForColumn(int column) {
+        if(column < 0 || column >= B.getN()) throw new IllegalArgumentException("column is invalid");
+        Matrix seed = Matrix.ones(A.getN(), B.getM());
+        Matrix curr = seed.copy();
+        curr = next(curr);
+        int T = 1;
+        while(!Arrays.equals(curr.getColumn(column), seed.getColumn(column))) {
+            curr = next(curr);
+            T++;
+        }
+        return T;
+    }
+
+    public int getTOfElement(int i, int j) {
+        if(i < 0 || i >= A.getN() || j < 0 || j >= B.getN()) throw new IllegalArgumentException("position is invalid");
+        return Math.min(getTActualForRow(i), getTActualForColumn(j));
+    }
+
     /**
      * @return expected value of binary sequence
      */
@@ -64,4 +97,9 @@ public class MSR {
     public double getDx() {
         return 1. - Math.pow(getMx(), 2);
     }
+
+    public int getN() { return A.getN(); }
+
+    public int getM() { return B.getN(); }
+
 }
