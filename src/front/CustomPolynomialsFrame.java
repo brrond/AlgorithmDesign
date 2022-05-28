@@ -148,9 +148,24 @@ public class CustomPolynomialsFrame extends FrameBase {
 
     }
 
+    private void createPathIfNotExist() {
+        File file = new File(path);
+        if(!file.exists()) {
+            try {
+                final boolean mkdirs = file.mkdirs();
+                final boolean newFile = file.createNewFile();
+                if(!mkdirs || !newFile) return;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return;
+            }
+            saveModel();
+        }
+    }
+
     public CustomPolynomialsFrame() {
         super("Custom table", 400, 400, new GridLayout(2, 1));
-
+        createPathIfNotExist();
         loadModel(); // on start of the frame should load data
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
