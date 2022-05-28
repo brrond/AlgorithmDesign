@@ -149,7 +149,7 @@ public class LFSRShowFrame extends FrameBase {
             _bin.append(tmpSeed & 1); // next element of bin string is y[0]
             // add new state of register
             strings.add(i + ") " + String.format("%" + lfsr.getN() + "s",
-                    Integer.toBinaryString(tmpSeed)).replace(' ', '0'));
+                    Integer.toBinaryString(tmpSeed)).replace(' ', '0') + " " + tmpSeed);
             tmpSeed = lfsr.next(tmpSeed); // generate new value
         }
     }
