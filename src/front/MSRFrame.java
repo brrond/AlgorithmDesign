@@ -82,7 +82,7 @@ public class MSRFrame {
                 }
 
                 try {
-                    new MSRShowFrame(new MSR(Matrix.fromCoefficient(N, Ca), Matrix.fromCoefficient(M, Cb)), seed);
+                    new MSRShowFrame(new MSR(Matrix.fromCoefficient(N, Ca), Matrix.fromCoefficient(M, Cb).T()), seed);
                 } catch(IllegalArgumentException exception) {
                     handleException(exception.getMessage());
                 } catch (Exception ignored) {
